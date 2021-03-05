@@ -8,9 +8,12 @@
  */
 
 
+import com.sun.prism.Image;
+import javafx.scene.image.ImageView;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -19,29 +22,34 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import java.io.FileInputStream;
 
 public class CDT_2 extends Application {
     TableView<Sleep_Chart> table;
     TableView<GoodBehaviors> table2;
     TableView<TargetBehaviors> table3;
 
-    ScrollPane s1 = new ScrollPane();
-    //ScrollBar s2 = new ScrollBar();
+    PasswordField passwordField = new PasswordField();
 
+    ScrollPane s1 = new ScrollPane();
+
+    @Override
     public void start(Stage primaryStage)throws Exception{
+        ImageView image = new ImageView("download.jpg");
+
         Scene scene = new Scene(new Group());
         primaryStage.setTitle("Client Data Tracker");
         primaryStage.setHeight(800);
         primaryStage.setWidth(1500);
 
-       // s2.setValue(0);
-       // s2.setMin(0);
-       // s2.setMax(1000);
-        //s2.setOrientation(Orientation.VERTICAL);
-
+        passwordField.setPromptText("Password");
+        passwordField.setMaxWidth(200);
 
         Label label = new Label("Sleep Chart");
         label.setFont((new Font("Arial",20)));
@@ -465,9 +473,10 @@ public class CDT_2 extends Application {
         table3.setEditable(true);
         table3.getColumns().addAll(dow,physical,angry,leaving,soar);
 
-
+        s1.setMinWidth(1400);
         VBox vbox = new VBox();
         vbox.setSpacing(25);
+        vbox.setMinSize(1000,1500);
         vbox.setPadding(new Insets(10, 0, 0, 10));
         vbox.getChildren().addAll(label, table, s1, label2, table2, label3, table3);
 
@@ -478,9 +487,38 @@ public class CDT_2 extends Application {
         sp2.setPrefViewportHeight(700);
         sp2.setContent(vbox);
 
+        Label p_label = new Label("Enter your password");
+        p_label.setLabelFor(passwordField);
+        p_label.setFont(new Font("Arial",12));
+
+        VBox box1 = new VBox();
+        box1.setAlignment(Pos.CENTER);
+        box1.getChildren().addAll(p_label,passwordField);
+
+        HBox box2 = new HBox();
+        image.setFitHeight(500);
+        image.setFitWidth(650);
+        box2.setAlignment(Pos.BOTTOM_CENTER);
+        box2.getChildren().add(image);
+
+        BorderPane pane = new BorderPane();
+        pane.setCenter(box1);
+        pane.setTop(box2);
+
+        Scene mainScene = new Scene(pane);
         ((Group) scene.getRoot()).getChildren().addAll(vbox,sp2);
-        primaryStage.setScene(scene);
+        primaryStage.setScene(mainScene);
         primaryStage.show();
+
+        passwordField.setOnAction(event -> {
+
+                if (!passwordField.getText().equals("123")) {
+                    passwordField.clear();
+                } else {
+                    primaryStage.setScene(scene);
+
+                }
+        });
 
     }
     public ObservableList<GoodBehaviors> getBehaviors(){
